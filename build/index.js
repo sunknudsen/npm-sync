@@ -36,6 +36,9 @@ const sync = async function () {
         const options = commander_1.default.opts();
         const src = path_1.resolve(process.cwd(), options.src);
         const dest = path_1.resolve(process.cwd(), options.dest);
+        if (src === dest) {
+            throw new Error("Invalid source (same as destination)");
+        }
         const packageJsonPath = path_1.join(src, "package.json");
         if (!fs_extra_1.existsSync(packageJsonPath)) {
             throw new Error("Invalid source (package.json file missing)");

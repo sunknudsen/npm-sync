@@ -46,6 +46,10 @@ const sync = async function () {
     const src = resolve(process.cwd(), options.src)
     const dest = resolve(process.cwd(), options.dest)
 
+    if (src === dest) {
+      throw new Error("Invalid source (same as destination)")
+    }
+
     const packageJsonPath = join(src, "package.json")
     if (!existsSync(packageJsonPath)) {
       throw new Error("Invalid source (package.json file missing)")

@@ -7,7 +7,7 @@ This project was developed to fix React hook [issues](https://github.com/faceboo
 ## Features
 
 - Super simple to use
-- Uses rsync to efficiently sync files
+- Uses `rsync` to efficiently sync files
 - Uses npm’s official [npm-packlist](https://www.npmjs.com/package/npm-packlist) to establish which files to sync
 - Uses trusted dependencies ([chokidar](https://www.npmjs.com/package/chokidar), [commander](https://www.npmjs.com/package/commander), [fs-extra](https://www.npmjs.com/package/fs-extra), etc…)
 - Very light codebase to audit (less than 200 lines of code)

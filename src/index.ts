@@ -103,7 +103,13 @@ const sync = async function () {
       const copyPath = async function (path: string, verbose: boolean = false) {
         const srcPath = join(src, path)
         const destPath = join(destPackagePath, path)
-        await copy(srcPath, destPath)
+        try {
+          await copy(srcPath, destPath)
+        } catch (error) {
+          if (error.code !== "ENOENT") {
+            throw error
+          }
+        }
         if (verbose) {
           console.info(`Copied ${chalk.bold(path)}`)
         }

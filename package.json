@@ -1,6 +1,6 @@
 {
   "name": "npm-sync",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.3",
   "description": "Sync npm packages between projects.",
   "engines": {
     "node": ">=10.23.2"

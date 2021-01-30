@@ -48,13 +48,6 @@ $ pwd
 
 $ npm-sync --dest /Users/sunknudsen/Code/sunknudsen/sunknudsen-website --watch
 Syncing @sunknudsen/react-cms to /Users/sunknudsen/Code/sunknudsen/sunknudsen-website/node_modules/@sunknudsen/react-cms…
-[
-  'lib/CMS.js',
-  'package.json',
-  'lib/CMS.js.map',
-  'README.md',
-  'lib/CMS.d.ts'
-]
 ? Do you wish to proceed? Yes
 Synced @sunknudsen/react-cms to to /Users/sunknudsen/Code/sunknudsen/sunknudsen-website/node_modules/@sunknudsen/react-cms
 Watching @sunknudsen/react-cms for changes…

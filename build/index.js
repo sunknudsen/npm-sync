@@ -49,10 +49,11 @@ const sync = async function () {
         if (!packageName) {
             throw new Error("Invalid source (package name missing)");
         }
-        const packagePeerDeps = Object.keys(packageProperties.peerDependencies);
         const packagePeerDepsPaths = [];
-        for (const packagePeerDep of packagePeerDeps) {
-            packagePeerDepsPaths.push(`node_modules/${packagePeerDep}`);
+        if (typeof packageProperties.peerDependencies === "object") {
+            for (const packagePeerDep of Object.keys(packageProperties.peerDependencies)) {
+                packagePeerDepsPaths.push(`node_modules/${packagePeerDep}`);
+            }
         }
         const packageFiles = await npm_packlist_1.default({ path: src });
         packageFiles.sort();

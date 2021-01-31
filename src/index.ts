@@ -56,14 +56,19 @@ const sync = async function () {
 
     const packageJson = await readFile(packageJsonPath, "utf8")
     const packageProperties = JSON.parse(packageJson)
+
     const packageName = packageProperties.name
     if (!packageName) {
       throw new Error("Invalid source (package name missing)")
     }
-    const packagePeerDeps = Object.keys(packageProperties.peerDependencies)
+
     const packagePeerDepsPaths = []
-    for (const packagePeerDep of packagePeerDeps) {
-      packagePeerDepsPaths.push(`node_modules/${packagePeerDep}`)
+    if (typeof packageProperties.peerDependencies === "object") {
+      for (const packagePeerDep of Object.keys(
+        packageProperties.peerDependencies
+      )) {
+        packagePeerDepsPaths.push(`node_modules/${packagePeerDep}`)
+      }
     }
 
     const packageFiles = await packlist({ path: src })

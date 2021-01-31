@@ -27,6 +27,8 @@ program
 
 program.parse(process.argv)
 
+const options = program.opts()
+
 const isSymlink = async function (path: string) {
   try {
     const stats = await lstat(path)
@@ -41,11 +43,8 @@ const isSymlink = async function (path: string) {
 
 const sync = async function () {
   try {
-    const options = program.opts()
-
     const src = resolve(process.cwd(), options.src)
     const dest = resolve(process.cwd(), options.dest)
-
     if (src === dest) {
       throw new Error("Invalid source (same as destination)")
     }
@@ -77,13 +76,14 @@ const sync = async function () {
 
     const destPackagePath = join(destNodeModulesPath, packageName)
 
-    let confirmation = true
+    let confirmation: boolean
 
-    if (!options.yes) {
+    if (options.yes) {
+      confirmation = true
+    } else {
       console.log(
         `Syncing ${chalk.bold(packageName)} to ${chalk.bold(destPackagePath)}…`
       )
-
       const answers = await inquirer.prompt([
         {
           type: "confirm",
@@ -92,7 +92,6 @@ const sync = async function () {
           default: false,
         },
       ])
-
       confirmation = answers.confirmation
     }
 
@@ -181,8 +180,12 @@ const sync = async function () {
       }
     }
   } catch (error) {
-    console.error(chalk.red(error.message))
-    process.exit(1)
+    if (options.verbose) {
+      throw error
+    } else {
+      console.error(chalk.red(error.message))
+      process.exit(1)
+    }
   }
 }
 

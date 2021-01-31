@@ -19,6 +19,7 @@ commander_1.default
     .option("--verbose", "show more debug info")
     .option("--yes", "skip confirmation prompt");
 commander_1.default.parse(process.argv);
+const options = commander_1.default.opts();
 const isSymlink = async function (path) {
     try {
         const stats = await fs_extra_1.lstat(path);
@@ -33,7 +34,6 @@ const isSymlink = async function (path) {
 };
 const sync = async function () {
     try {
-        const options = commander_1.default.opts();
         const src = path_1.resolve(process.cwd(), options.src);
         const dest = path_1.resolve(process.cwd(), options.dest);
         if (src === dest) {
@@ -61,8 +61,11 @@ const sync = async function () {
             throw new Error("Invalid destination (node_modules folder missing)");
         }
         const destPackagePath = path_1.join(destNodeModulesPath, packageName);
-        let confirmation = true;
-        if (!options.yes) {
+        let confirmation;
+        if (options.yes) {
+            confirmation = true;
+        }
+        else {
             console.log(`Syncing ${chalk_1.default.bold(packageName)} to ${chalk_1.default.bold(destPackagePath)}…`);
             const answers = await inquirer_1.default.prompt([
                 {
@@ -145,8 +148,13 @@ const sync = async function () {
         }
     }
     catch (error) {
-        console.error(chalk_1.default.red(error.message));
-        process.exit(1);
+        if (options.verbose) {
+            throw error;
+        }
+        else {
+            console.error(chalk_1.default.red(error.message));
+            process.exit(1);
+        }
     }
 };
 sync();

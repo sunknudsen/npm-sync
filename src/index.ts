@@ -86,7 +86,7 @@ const sync = async function () {
     if (options.yes) {
       confirmation = true
     } else {
-      console.log(
+      console.info(
         `Syncing ${chalk.bold(packageName)} to ${chalk.bold(destPackagePath)}…`
       )
       const answers = await inquirer.prompt([
@@ -100,7 +100,10 @@ const sync = async function () {
       confirmation = answers.confirmation
     }
 
-    if (confirmation === true) {
+    if (confirmation !== true) {
+      console.info(chalk.red("Cancelled!"))
+      process.exit(1)
+    } else {
       // Unlink npm-linked package
       if (await isSymlink(destPackagePath)) {
         await unlink(destPackagePath)
@@ -158,12 +161,16 @@ const sync = async function () {
         input: execaInput,
       })
 
-      console.log(
-        `Synced ${chalk.bold(packageName)} to ${chalk.bold(destPackagePath)}`
+      console.info(
+        chalk.green(
+          `Synced ${chalk.bold(packageName)} to ${chalk.bold(
+            destPackagePath
+          )} successfully!`
+        )
       )
 
       if (options.watch) {
-        console.log(`Watching ${chalk.bold(packageName)} for changes…`)
+        console.info(`Watching ${chalk.bold(packageName)} for changes…`)
 
         const chokidarPaths = packageFiles
         const chokidarIgnore = []

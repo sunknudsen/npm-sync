@@ -67,7 +67,7 @@ const sync = async function () {
             confirmation = true;
         }
         else {
-            console.log(`Syncing ${chalk_1.default.bold(packageName)} to ${chalk_1.default.bold(destPackagePath)}…`);
+            console.info(`Syncing ${chalk_1.default.bold(packageName)} to ${chalk_1.default.bold(destPackagePath)}…`);
             const answers = await inquirer_1.default.prompt([
                 {
                     type: "confirm",
@@ -78,7 +78,11 @@ const sync = async function () {
             ]);
             confirmation = answers.confirmation;
         }
-        if (confirmation === true) {
+        if (confirmation !== true) {
+            console.info(chalk_1.default.red("Cancelled!"));
+            process.exit(1);
+        }
+        else {
             // Unlink npm-linked package
             if (await isSymlink(destPackagePath)) {
                 await fs_extra_1.unlink(destPackagePath);
@@ -127,9 +131,9 @@ const sync = async function () {
             const { stdout } = await execa_1.default("rsync", execaArguments, {
                 input: execaInput,
             });
-            console.log(`Synced ${chalk_1.default.bold(packageName)} to ${chalk_1.default.bold(destPackagePath)}`);
+            console.info(chalk_1.default.green(`Synced ${chalk_1.default.bold(packageName)} to ${chalk_1.default.bold(destPackagePath)} successfully!`));
             if (options.watch) {
-                console.log(`Watching ${chalk_1.default.bold(packageName)} for changes…`);
+                console.info(`Watching ${chalk_1.default.bold(packageName)} for changes…`);
                 const chokidarPaths = packageFiles;
                 const chokidarIgnore = [];
                 if (options.deps) {

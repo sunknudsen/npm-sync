@@ -102,7 +102,7 @@ const sync = async function () {
 
     if (confirmation !== true) {
       console.info(chalk.red("Cancelled!"))
-      process.exit(1)
+      process.exit(0)
     } else {
       // Unlink npm-linked package
       if (await isSymlink(destPackagePath)) {

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const commander_1 = __importDefault(require("commander"));
+const commander_1 = require("commander");
 const chokidar_1 = __importDefault(require("chokidar"));
 const path_1 = require("path");
 const fs_extra_1 = require("fs-extra");
@@ -11,18 +11,18 @@ const npm_packlist_1 = __importDefault(require("npm-packlist"));
 const execa_1 = __importDefault(require("execa"));
 const chalk_1 = __importDefault(require("chalk"));
 const inquirer_1 = __importDefault(require("inquirer"));
-commander_1.default
+commander_1.program
     .option("--src <source>", "path to package", process.cwd())
     .requiredOption("--dest <destination>", "path to project")
     .option("--no-deps", "do not sync package dependencies")
     .option("--watch", "watch package for changes")
     .option("--verbose", "show more debug info")
     .option("--yes", "skip confirmation prompt");
-commander_1.default.parse(process.argv);
-const options = commander_1.default.opts();
+commander_1.program.parse(process.argv);
+const options = commander_1.program.opts();
 const isSymlink = async function (path) {
     try {
-        const stats = await fs_extra_1.lstat(path);
+        const stats = await (0, fs_extra_1.lstat)(path);
         return stats.isSymbolicLink();
     }
     catch (error) {
@@ -34,16 +34,16 @@ const isSymlink = async function (path) {
 };
 const sync = async function () {
     try {
-        const src = path_1.resolve(process.cwd(), options.src);
-        const dest = path_1.resolve(process.cwd(), options.dest);
+        const src = (0, path_1.resolve)(process.cwd(), options.src);
+        const dest = (0, path_1.resolve)(process.cwd(), options.dest);
         if (src === dest) {
             throw new Error("Invalid source (same as destination)");
         }
-        const packageJsonPath = path_1.join(src, "package.json");
-        if (!fs_extra_1.existsSync(packageJsonPath)) {
+        const packageJsonPath = (0, path_1.join)(src, "package.json");
+        if (!(0, fs_extra_1.existsSync)(packageJsonPath)) {
             throw new Error("Invalid source (package.json file missing)");
         }
-        const packageJson = await fs_extra_1.readFile(packageJsonPath, "utf8");
+        const packageJson = await (0, fs_extra_1.readFile)(packageJsonPath, "utf8");
         const packageProperties = JSON.parse(packageJson);
         const packageName = packageProperties.name;
         if (!packageName) {
@@ -55,13 +55,13 @@ const sync = async function () {
                 packagePeerDepsPaths.push(`node_modules/${packagePeerDep}`);
             }
         }
-        const packageFiles = await npm_packlist_1.default({ path: src });
+        const packageFiles = await (0, npm_packlist_1.default)({ path: src });
         packageFiles.sort();
-        const destNodeModulesPath = path_1.join(dest, "node_modules");
-        if (!fs_extra_1.existsSync(destNodeModulesPath)) {
+        const destNodeModulesPath = (0, path_1.join)(dest, "node_modules");
+        if (!(0, fs_extra_1.existsSync)(destNodeModulesPath)) {
             throw new Error("Invalid destination (node_modules folder missing)");
         }
-        const destPackagePath = path_1.join(destNodeModulesPath, packageName);
+        const destPackagePath = (0, path_1.join)(destNodeModulesPath, packageName);
         let confirmation;
         if (options.yes) {
             confirmation = true;
@@ -85,14 +85,14 @@ const sync = async function () {
         else {
             // Unlink npm-linked package
             if (await isSymlink(destPackagePath)) {
-                await fs_extra_1.unlink(destPackagePath);
+                await (0, fs_extra_1.unlink)(destPackagePath);
             }
-            await fs_extra_1.ensureDir(destPackagePath);
+            await (0, fs_extra_1.ensureDir)(destPackagePath);
             const copyPath = async function (path, verbose = false) {
-                const srcPath = path_1.join(src, path);
-                const destPath = path_1.join(destPackagePath, path);
+                const srcPath = (0, path_1.join)(src, path);
+                const destPath = (0, path_1.join)(destPackagePath, path);
                 try {
-                    await fs_extra_1.copy(srcPath, destPath);
+                    await (0, fs_extra_1.copy)(srcPath, destPath);
                 }
                 catch (error) {
                     if (error.code !== "ENOENT") {
@@ -104,8 +104,8 @@ const sync = async function () {
                 }
             };
             const deletePath = async function (path, verbose = false) {
-                const deletePath = path_1.join(destPackagePath, path);
-                await fs_extra_1.remove(deletePath);
+                const deletePath = (0, path_1.join)(destPackagePath, path);
+                await (0, fs_extra_1.remove)(deletePath);
                 if (verbose) {
                     console.info(`Deleted ${chalk_1.default.bold(path)}`);
                 }
@@ -128,7 +128,7 @@ const sync = async function () {
             if (options.deps) {
                 execaInput += "node_modules";
             }
-            const { stdout } = await execa_1.default("rsync", execaArguments, {
+            const { stdout } = await (0, execa_1.default)("rsync", execaArguments, {
                 input: execaInput,
             });
             console.info(chalk_1.default.green(`Synced ${chalk_1.default.bold(packageName)} to ${chalk_1.default.bold(destPackagePath)} successfully!`));

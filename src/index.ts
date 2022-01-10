@@ -1,6 +1,6 @@
 "use strict"
 
-import program from "commander"
+import { program } from "commander"
 import chokidar from "chokidar"
 import { join, resolve } from "path"
 import {
